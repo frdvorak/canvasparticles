@@ -13,7 +13,7 @@ body {
 }
 h1 {
 	position: absolute;
-	bottom: -95px; left: -105px;
+	bottom: -65px; left: -105px;
 	width: 200%;
 	transform: rotate(10deg);
 	z-index: -10;
@@ -36,11 +36,10 @@ h1 {
 }
 #controls {
 	position: absolute;
-	width: auto;
-	min-width: 260px;
+	width: 260px;
 	height: 202px;
-	background: rgba(255,255,255,.7);
-	top: 20%;
+	//background: rgba(255,255,255,.1);
+	top: 5%;
 	left: 50%;
 	transform: translate(-50%, 0);
 	z-index: 100;
@@ -82,13 +81,19 @@ h1 {
 }
 .infoBoard {
 	position: relative;
-	width: calc(100% - 2px);
+	width: 242px;
 	margin-top: 2px;
 	height: 150px;
 	top:0; left:0;
 	float: left;
-	background: rgba(0,0,0,.5);
+	background: rgba(0,0,0,.8);
 	border-radius: 5px;
+	padding: 8px;
+	text-align: justify;
+	font-size: 15px;
+	line-height: 16px;
+	color: #fff;
+	
 }
 </style>
 <body>
@@ -102,21 +107,34 @@ h1 {
 		<div class='button button3'>3</div>
 		<div class='button button4'>4</div>
 		<div class='button button5'>5</div>
-		<div class='infoBoard'></div>
+		<div class='infoBoard'>
+		Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. 
+		</div>
 	</div>
 </div>
 <script>
+let activeEffect = 1;
 // CANVAS ///////////////////////////////////
 const canvas = document.getElementById("canvas1");
 const ctx = canvas.getContext("2d");
 ctx.canvas.width  = window.innerWidth;
 ctx.canvas.height = window.innerHeight;
 
-/*
+// MOUSE POSITION ///////////////////////////
+let mouse = {
+	x: undefined,
+	y: undefined
+}
+window.addEventListener('mousemove', 
+	function(event){
+		mouse.x = event.x;
+		mouse.y = event.y;
+		//console.log(mouse);
+});
+
 // RANGE OF SIZES FOR PARTICLES (on mouse hover)
 const maxSize = 25;
 const minSize = 3;
-*/
 
 // SOME RANDOM COLOURS https://color.adobe.com/create/color-wheel/
 const colorArray = [
@@ -126,6 +144,8 @@ const colorArray = [
 	'#145674',
 	'#023855'
 ];
+
+
 
 // CREATE PARTICLE OBJECT ///////////////////
 function Particle(x, y, dx, dy, size, color){
@@ -147,24 +167,26 @@ function Particle(x, y, dx, dy, size, color){
 		ctx.fill();
 	}
 	this.update = function(){
-		if (this.x + this.size > canvas.width || this.x - this.size < 0){
-			this.dx = -this.dx;
-		}
-		if (this.y + this.size > canvas.height || this.y - this.size < 0){
-			this.dy = -this.dy;
-		}
-		this.x += this.dx; 
-		this.y += this.dy;
-		/*
-		//interactivity
-		if (mouse.x - this.x < 50 && mouse.x - this.x >-50 &&
-			mouse.y - this.y < 50 && mouse.y - this.y >-50){
-			if (this.size < maxSize){
-			this.size += 1;
+		if (activeEffect == 1){
+			if (this.x + this.size > canvas.width || this.x - this.size < 0){
+				this.dx = -this.dx;
 			}
-		} else if (this.size > this.minSize){
-			this.size -= 1;
-		}*/
+			if (this.y + this.size > canvas.height || this.y - this.size < 0){
+				this.dy = -this.dy;
+			}
+			this.x += this.dx; 
+			this.y += this.dy;
+			
+			//interactivity
+			if (mouse.x - this.x < 50 && mouse.x - this.x >-50 &&
+				mouse.y - this.y < 50 && mouse.y - this.y >-50){
+				if (this.size < maxSize){
+				this.size += 1;
+				}
+			} else if (this.size > this.minSize){
+				this.size -= 1;
+			}
+			}
 		this.draw();
 	}
 }
@@ -203,6 +225,23 @@ function animate(){
 }
 init();
 animate();
+
+//CONTROLS, BUTTONS 1 - 5 ////////////////////////////
+const buttons = document.querySelectorAll('.button');
+buttons.forEach(button => button.addEventListener('click', function(){
+	//console.log(this.classList);
+	for (let i = 0; i < buttons.length; i++){
+		buttons[i].classList.remove('active');
+	}
+	this.classList.add('active');
+	activeEffect = this.textContent;
+	console.log(activeEffect);
+	
+	/*for (let i = 0; i < buttons.length; i++){
+		console.log(this.classList);
+		button[i].classList.remove('active');
+	}*/
+}))
 
 </script>
 
