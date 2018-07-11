@@ -119,6 +119,8 @@ const canvas = document.getElementById("canvas1");
 const ctx = canvas.getContext("2d");
 ctx.canvas.width  = window.innerWidth;
 ctx.canvas.height = window.innerHeight;
+let particleArray = [];
+let angle = 0;
 
 // MOUSE POSITION ///////////////////////////
 let mouse = {
@@ -148,7 +150,7 @@ const colorArray = [
 
 
 // CREATE PARTICLE OBJECT ///////////////////
-function Particle(x, y, dx, dy, size, color){
+function Particle(x, y, dx, dy, size, color, density){
 	this.x = x;
 	this.y = y;
 	this.dx = dx;
@@ -156,6 +158,7 @@ function Particle(x, y, dx, dy, size, color){
 	this.size = size;
 	this.minSize = size;
 	this.color = colorArray[Math.floor(Math.random()*colorArray.length)];
+	this.density =  Math.random() * 2;
 	
 	this.draw = function(){
 		//ctx.clearRect(0,0,innerWidth,innerHeight);
@@ -167,6 +170,8 @@ function Particle(x, y, dx, dy, size, color){
 		ctx.fill();
 	}
 	this.update = function(){
+		
+		//////////////////////////////// EFFECT 1 ////////////////////////////
 		if (activeEffect == 1){
 			if (this.x + this.size > canvas.width || this.x - this.size < 0){
 				this.dx = -this.dx;
@@ -186,8 +191,35 @@ function Particle(x, y, dx, dy, size, color){
 			} else if (this.size > this.minSize){
 				this.size -= 1;
 			}
-			}
-		this.draw();
+		}
+		//////////////////////////////// EFFECT 2 ////////////////////////////
+		if (activeEffect == 2){
+			//console.log(particleArray.length);
+			angle += 0.00001;
+				//let part = particleArray[i];
+				this.y += Math.pow(this.density, 1.1) + 1.5;
+				this.x += Math.sin(angle) * .3;
+			
+				// if it reaches bottom add new one to the top
+				if (this.y > canvas.height + 10){
+						this.x = Math.random() * (innerWidth - size * 2) + size;
+						this.y = -10;
+				};
+				/// bouncing from mouse
+				if (mouse.x - this.x < 20 && mouse.y - this.y > 1 && mouse.y - this.y > -1  ){
+					this.x+= 0.5;
+				} 
+				if (mouse.x - this.x >-20 && mouse.y - this.y > 10 && mouse.y - this.y > -10  ){
+					this.x-= 0.5;
+				} 
+				//mouse.y - this.y < 1 && mouse.y - this.y >-100){
+				
+		}
+				
+			
+
+		
+	this.draw();
 	}
 }
 
@@ -200,8 +232,7 @@ window.addEventListener('resize',
 		init();
 	}
 )
-let particleArray = [];
-	
+
 function init() {
 	particleArray = [];
 	for (let i = 0; i < 500; i++){
@@ -210,6 +241,7 @@ function init() {
 		let y = Math.random() * (innerHeight - size * 2) + size;
 		let dx = (Math.random() - 0.5) * .5;
 		let dy = (Math.random() - 0.5) * .5;
+		let density = Math.random() + 1 //determines how fast it falls;
 		particleArray.push(new Particle(x, y, dx, dy, size));
 	}
 }
@@ -236,7 +268,7 @@ buttons.forEach(button => button.addEventListener('click', function(){
 	this.classList.add('active');
 	activeEffect = this.textContent;
 	console.log(activeEffect);
-	
+	init();
 	/*for (let i = 0; i < buttons.length; i++){
 		console.log(this.classList);
 		button[i].classList.remove('active');
