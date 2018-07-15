@@ -108,7 +108,14 @@ h1 {
 		<div class='button button4'>4</div>
 		<div class='button button5'>5</div>
 		<div class='infoBoard'>
-		Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. 
+		<p>
+		1 - floating
+		2 - snow
+		3 - cross streams
+		4 - bouncing
+		5 - bubbles 
+		Can be used as an interactive background for a website
+		</p>
 		</div>
 	</div>
 </div>
@@ -139,7 +146,7 @@ window.addEventListener('mousemove',
 });
 
 // RANGE OF SIZES FOR PARTICLES (on mouse hover)
-const maxSize = 25;
+const maxSize = 35;
 const minSize = 3;
 
 // SOME RANDOM COLOURS https://color.adobe.com/create/color-wheel/
@@ -154,7 +161,7 @@ const colorArray = [
 
 
 // CREATE PARTICLE OBJECT ///////////////////
-function Particle(x, y, dx, dy, size, color, density){
+function Particle(x, y, dx, dy, size, color, density, bounceFactor, vy){
 	this.x = x;
 	this.y = y;
 	this.dx = dx;
@@ -162,14 +169,16 @@ function Particle(x, y, dx, dy, size, color, density){
 	this.size = size;
 	this.minSize = size;
 	this.color = colorArray[Math.floor(Math.random()*colorArray.length)];
-	this.density = (Math.random() * 2)+1;
+	this.density = (Math.random() * 0.2)+0.1;
+	this.bounceFactor = 0.7;
+	this.vy = 1;
 	
 	this.draw = function(){
 		//ctx.clearRect(0,0,innerWidth,innerHeight);
 		ctx.beginPath();
 		ctx.arc(this.x,this.y,this.size,0,Math.PI * 2, false);
-		//ctx.strokeStyle = 'blue';
-		//ctx.stroke();
+		ctx.strokeStyle = 'black';
+		ctx.stroke();
 		ctx.fillStyle = this.color;
 		ctx.fill();
 	}
@@ -190,16 +199,16 @@ function Particle(x, y, dx, dy, size, color, density){
 			if (mouse.x - this.x < 50 && mouse.x - this.x >-50 &&
 				mouse.y - this.y < 50 && mouse.y - this.y >-50){
 				if (this.size < maxSize){
-				this.size += 1;
+				this.size += 5;
 				}
 			} else if (this.size > this.minSize){
-				this.size -= 0.1;
+				this.size -= 0.2;
 			}
 		}
 		//////////////////////////////// EFFECT 2 ////////////////////////////
 		if (activeEffect == 2){
 			angle += 0.00001;
-				this.y += this.density;
+				this.y += this.density*10;
 				this.x += Math.sin(angle) * .3;
 			
 				// if it reaches bottom add new one to the top
@@ -216,23 +225,24 @@ function Particle(x, y, dx, dy, size, color, density){
 				mouse.y - this.y < 50 && mouse.y - this.y >-50){
 				this.x+=1;
 				}		
-		} 	if (activeEffect == 3){
-				this.size+=0.07;
+		} 	
+		if (activeEffect == 3){
+				this.size+=0.15;
 				if (this.x < innerWidth/2 && this.y < innerHeight/2){
-					this.x-=1;
-					this.y-=0.3;
+					this.x-=2;
+					this.y-=0.9 ;
 				}
 				if (this.x < innerWidth/2 && this.y > innerHeight/2){
-					this.x-=1;
-					this.y+=0.3;
+					this.x-=2;
+					this.y+=0.9;
 				}
 				if (this.x > innerWidth/2 && this.y > innerHeight/2){
-					this.x+=1;
-					this.y+=0.3;
+					this.x+=2;
+					this.y+=0.9;
 				}
 				if (this.x > innerWidth/2 && this.y < innerHeight/2){
-					this.x+=1;
-					this.y-=0.3;
+					this.x+=2;
+					this.y-=0.9;
 				}
 				if (this.x < 0-this.size || this.x > innerWidth+this.size){
 					this.x =  innerWidth/2 + (Math.random() * innerWidth/2)-innerWidth/4;
@@ -246,15 +256,37 @@ function Particle(x, y, dx, dy, size, color, density){
 				}
 				//interactivity
 				if (mouse.x - this.x < 50 && mouse.x - this.x > -50 &&
-				mouse.y - this.y < 50 && mouse.y - this.y >-50){
-				//this.x-=1;
-				this.size+=1;
-				}/*
+				mouse.y - this.y < 50 && mouse.y - this.y >0){
+					this.y-=4;
+					//this.x+=(Math.random() * 1)-0.5;
+				}
+				if (mouse.x - this.x < 50 && mouse.x - this.x > -50 &&
+				mouse.y - this.y < 0 && mouse.y - this.y >-50){
+					this.y+=4;
+					//this.x+=(Math.random() * 1)-0.5;
+				}
+				/*
 				if (mouse.x - this.x < 0 && mouse.x - this.x >-50 &&
 				mouse.y - this.y < 50 && mouse.y - this.y >-50){
 				//this.x+=1;
 				this.y+=1;
 				}*/
+		}
+		if (activeEffect == 4){
+				//this.density = (Math.random() * 1)-0.5;
+				this.y += this.vy;
+				this.vy += this.density;
+									
+				// if it reaches bottom add new one to the top
+				if (this.y > canvas.height-this.size){
+						this.vy *= -this.bounceFactor;
+				};
+				
+				if ((this.y > innerHeight - innerHeight/5) &&(mouse.x - this.x < 20 && mouse.x - this.x >-20 &&
+				mouse.y - this.y < 1250 && mouse.y - this.y >-1250)){
+				//this.x+=1;
+				this.vy-=0.9;
+				}
 		}
 	this.draw();
 	}
@@ -271,7 +303,7 @@ window.addEventListener('resize',
 
 function init() {
 	particleArray = [];
-	for (let i = 0; i < 500; i++){
+	for (let i = 0; i < 900; i++){
 		let size = Math.random() * innerHeight/80 + innerHeight/350; //PARTICLE SIZE DEPENDING ON WINDOW HEIGHT
 		let x = Math.random() * (innerWidth - size * 2) + size;
 		let y = Math.random() * (innerHeight - size * 2) + size;
