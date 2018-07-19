@@ -146,7 +146,7 @@ window.addEventListener('mousemove',
 });
 
 // RANGE OF SIZES FOR PARTICLES (on mouse hover)
-const maxSize = 25;
+const maxSize = 35;
 const minSize = 3;
 
 // SOME RANDOM COLOURS https://color.adobe.com/create/color-wheel/
@@ -161,7 +161,7 @@ const colorArray = [
 
 
 // CREATE PARTICLE OBJECT ///////////////////
-function Particle(x, y, dx, dy, size, color, density, bounceFactor, vy){
+function Particle(x, y, dx, dy, size, color, density, bounceFactor, vy, randomize){
 	this.x = x;
 	this.y = y;
 	this.dx = dx;
@@ -169,9 +169,10 @@ function Particle(x, y, dx, dy, size, color, density, bounceFactor, vy){
 	this.size = size;
 	this.minSize = size;
 	this.color = colorArray[Math.floor(Math.random()*colorArray.length)];
-	this.density = (innerHeight/1000) +(Math.random() * 0.2)+0.1;
+	this.density = 0.3 + (Math.random() * 0.2)+0.1;
 	this.bounceFactor = 0.7;
 	this.vy = 1;
+	this.randomize = (Math.random() * 1)+15;
 	
 	this.draw = function(){
 		//ctx.clearRect(0,0,innerWidth,innerHeight);
@@ -208,7 +209,7 @@ function Particle(x, y, dx, dy, size, color, density, bounceFactor, vy){
 		//////////////////////////////// EFFECT 2 ////////////////////////////
 		if (activeEffect == 2){
 			angle += 0.00001;
-				this.y += this.density*3;
+				this.y += this.density*5;
 				this.x += Math.sin(angle) * .3;
 			
 				// if it reaches bottom add new one to the top
@@ -217,13 +218,15 @@ function Particle(x, y, dx, dy, size, color, density, bounceFactor, vy){
 						this.y = -10;
 				};
 				/// bouncing from mouse
-				if (mouse.x - this.x < 50 && mouse.x - this.x >0 &&
-				mouse.y - this.y < 50 && mouse.y - this.y >-50){
-				this.x-=1;
+				if (mouse.x - this.x < this.density*100 && mouse.x - this.x >0 &&
+				mouse.y - this.y < this.density*40 && mouse.y - this.y >-this.density*40){
+				this.x-=2;
+				this.y-=2;
 				}
-				if (mouse.x - this.x < 0 && mouse.x - this.x >-50 &&
-				mouse.y - this.y < 50 && mouse.y - this.y >-50){
-				this.x+=1;
+				if (mouse.x - this.x < 0 && mouse.x - this.x >-this.density*100 &&
+				mouse.y - this.y < this.density*40 && mouse.y - this.y >-this.density*40){
+				this.x+=3;
+				this.y-=2;
 				}		
 		} 
 		//////////////////////////////// EFFECT 3 ////////////////////////////
@@ -291,6 +294,34 @@ function Particle(x, y, dx, dy, size, color, density, bounceFactor, vy){
 				}
 		}
 		//////////////////////////////// EFFECT 5 ////////////////////////////
+		if (activeEffect == 5){
+				angle += this.density/71;
+				//this.vy += this.density;
+				this.y -= this.density+this.randomize/30;
+				this.x = this.x + Math.sin(angle) * 0.8;
+				this.size += this.density/6;
+
+				// if it reaches 'maxSize-6' make it transparent
+				if (this.size > maxSize){
+						this.color = "rgba(255, 255, 255, 0.6)";
+				};
+				
+				// if it reaches 'maxSize' pop and add one to the bottom of screen
+				if (this.size > maxSize+this.randomize){
+						this.y = innerHeight/2 + (Math.random()*innerHeight/4)+innerHeight/4;
+						this.x = (Math.random()*innerWidth*2)-innerWidth;
+						this.size = (Math.random() * 0.1)+0.1;
+						this.vy = 0.01;
+						this.color = colorArray[Math.floor(Math.random()*colorArray.length)];;
+				};
+				
+				//interactivity
+				if (mouse.x - this.x < 50 && mouse.x - this.x > -50 &&
+				mouse.y - this.y < 50 && mouse.y - this.y >-50){
+					this.size+=1;
+				}
+				
+		}
 	this.draw();
 	}
 }
