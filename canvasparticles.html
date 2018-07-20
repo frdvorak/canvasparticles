@@ -95,6 +95,9 @@ h1 {
 	color: #fff;
 	
 }
+#slider {
+	width: 235px;
+}
 </style>
 <body>
 <canvas id='canvas1'></canvas>	
@@ -116,6 +119,7 @@ h1 {
 		5 - bubbles 
 		Can be used as an interactive background for a website
 		</p>
+		<input type='range' id='slider' name='slider' min='1' max='2' value='2'>
 		</div>
 	</div>
 </div>
@@ -126,18 +130,25 @@ const canvas = document.getElementById("canvas1");
 const ctx = canvas.getContext("2d");
 ctx.canvas.width  = window.innerWidth;
 ctx.canvas.height = window.innerHeight;
+const slider = document.querySelector('#slider');
 let particleArray = [];
 let angle = 0;
+let sliderValue = 1;
+
+
+
 
 // MOUSE POSITION ///////////////////////////
 let mouse = {
 	x: undefined,
 	y: undefined
 }
+
 setInterval(function(){
 	mouse.x = undefined;
 	mouse.y = undefined;
 }, 5000);
+
 window.addEventListener('mousemove', 
 	function(event){
 		mouse.x = event.x;
@@ -146,19 +157,33 @@ window.addEventListener('mousemove',
 });
 
 // RANGE OF SIZES FOR PARTICLES (on mouse hover)
-const maxSize = 35;
-const minSize = 3;
+let maxSize = innerWidth/17;
+let minSize = 3;
 
 // SOME RANDOM COLOURS https://color.adobe.com/create/color-wheel/
-const colorArray = [
+const colorArray1 = [
 	'#2FC1E4',
 	'#21A4D3',
 	'#048CAC',
 	'#145674',
 	'#023855'
 ];
+const colorArray2 = [
+	'#fff',
+	'#000',
+	'blue',
+	'green',
+	'red'
+];
 
+// SLIDER INPUT /////////////////////////////
 
+slider.addEventListener('change', function(){
+	sliderValue = slider.value;
+	console.log(sliderValue);
+	init();
+
+})
 
 // CREATE PARTICLE OBJECT ///////////////////
 function Particle(x, y, dx, dy, size, color, density, bounceFactor, vy, randomize){
@@ -168,11 +193,17 @@ function Particle(x, y, dx, dy, size, color, density, bounceFactor, vy, randomiz
 	this.dy = dy;
 	this.size = size;
 	this.minSize = size;
-	this.color = colorArray[Math.floor(Math.random()*colorArray.length)];
+	this.color = colorArray1[Math.floor(Math.random()*colorArray1.length)];
 	this.density = 0.3 + (Math.random() * 0.2)+0.1;
 	this.bounceFactor = 0.7;
 	this.vy = 1;
 	this.randomize = (Math.random() * 1)+15;
+	
+									if (sliderValue == 1){
+							this.color = colorArray1[Math.floor(Math.random()*colorArray1.length)];
+						} else if (sliderValue == 2){
+							this.color = colorArray2[Math.floor(Math.random()*colorArray2.length)];
+						}
 	
 	this.draw = function(){
 		//ctx.clearRect(0,0,innerWidth,innerHeight);
@@ -183,8 +214,9 @@ function Particle(x, y, dx, dy, size, color, density, bounceFactor, vy, randomiz
 		ctx.fillStyle = this.color;
 		ctx.fill();
 	}
+	
 	this.update = function(){
-		
+
 		//////////////////////////////// EFFECT 1 ////////////////////////////
 		if (activeEffect == 1){
 			if (this.x + this.size > canvas.width || this.x - this.size < 0){
@@ -299,7 +331,7 @@ function Particle(x, y, dx, dy, size, color, density, bounceFactor, vy, randomiz
 				//this.vy += this.density;
 				this.y -= this.density+this.randomize/30;
 				this.x = this.x + Math.sin(angle) * 0.8;
-				this.size += this.density/6;
+				this.size += this.density/2;
 
 				// if it reaches 'maxSize-6' make it transparent
 				if (this.size > maxSize){
@@ -312,13 +344,17 @@ function Particle(x, y, dx, dy, size, color, density, bounceFactor, vy, randomiz
 						this.x = (Math.random()*innerWidth*2)-innerWidth;
 						this.size = (Math.random() * 0.1)+0.1;
 						this.vy = 0.01;
-						this.color = colorArray[Math.floor(Math.random()*colorArray.length)];;
+						if (sliderValue == 1){
+							this.color = colorArray1[Math.floor(Math.random()*colorArray1.length)];
+						} else if (sliderValue == 2){
+							this.color = colorArray2[Math.floor(Math.random()*colorArray2.length)];
+						}
 				};
 				
 				//interactivity
 				if (mouse.x - this.x < 50 && mouse.x - this.x > -50 &&
 				mouse.y - this.y < 50 && mouse.y - this.y >-50){
-					this.size+=1;
+					this.size+=2;
 				}
 				
 		}
@@ -331,6 +367,7 @@ window.addEventListener('resize',
 	function(){
 		canvas.width = innerWidth;
 		canvas.height = innerHeight;
+		maxSize = innerWidth/17;
 		init();
 	}
 )
