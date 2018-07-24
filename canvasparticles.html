@@ -70,7 +70,7 @@ h1 {
 	position: relative;
 	top:0; left: 0;
 	float: left;
-	width: 50px; height: 50px;
+	width: 41.3px; height: 50px;
 	background: rgba(0,0,0,.5);
 	margin-right: 2px;
 	border-radius: 5px;
@@ -85,7 +85,23 @@ h1 {
 	background: rgba(0,0,0,.9);
 	color: #fff;
 }
-.infoBoard {
+.infoBoard1 {
+	position: relative;
+	width: 242px;
+	margin-top: 2px;
+	height: 40px;
+	top:0; left:0;
+	float: left;
+	background: rgba(0,0,0,.8);
+	border-radius: 5px;
+	padding: 0px 8px;
+	text-align: justify;
+	font-size: 15px;
+	line-height: 16px;
+	color: #fff;
+	
+}
+.infoBoard2 {
 	position: relative;
 	width: 242px;
 	margin-top: 2px;
@@ -102,7 +118,10 @@ h1 {
 	
 }
 #slider {
-	width: 235px;
+	width: 175px;
+	float: right;
+	position: absolute;
+	top: 9px; right: 10px;
 }
 </style>
 <body>
@@ -116,7 +135,11 @@ h1 {
 		<div class='button button3'>3</div>
 		<div class='button button4'>4</div>
 		<div class='button button5'>5</div>
-		<div class='infoBoard'>
+		<div class='button button5'>6</div>
+		<div class='infoBoard1'>
+				<p>color: <input type='range' id='slider' name='slider' min='1' max='4' value='1'></p>
+		</div>
+		<div class='infoBoard2'>
 		<p>
 		1 - floating
 		2 - snow
@@ -125,7 +148,6 @@ h1 {
 		5 - bubbles 
 		-- can be used as an interactive background for a website --
 		</p>
-		<input type='range' id='slider' name='slider' min='1' max='4' value='1'>
 		</div>
 	</div>
 </div>
@@ -140,9 +162,6 @@ const slider = document.querySelector('#slider');
 let particleArray = [];
 let angle = 0;
 let sliderValue = 1;
-
-
-
 
 // MOUSE POSITION ///////////////////////////
 let mouse = {
@@ -220,11 +239,6 @@ function Particle(x, y, dx, dy, size, color, density, bounceFactor, vy, randomiz
 	this.dy = dy;
 	this.size = size;
 	this.minSize = size;
-	this.color = colorArray1[Math.floor(Math.random()*colorArray1.length)];
-	this.density = 0.3 + (Math.random() * 0.2)+0.1;
-	this.bounceFactor = 0.7;
-	this.vy = 1;
-	this.randomize = (Math.random() * 1)+15;
 	if (sliderValue == 1){
 		this.color = colorArray1[Math.floor(Math.random()*colorArray1.length)];
 	} else if (sliderValue == 2){
@@ -234,18 +248,22 @@ function Particle(x, y, dx, dy, size, color, density, bounceFactor, vy, randomiz
 	}else if (sliderValue == 4){
 		this.color = colorArray4[Math.floor(Math.random()*colorArray4.length)];
 	}
+	this.density = 0.3 + (Math.random() * 0.2)+0.1;
+	this.bounceFactor = 0.7;
+	this.vy = 1;
+	this.randomize = (Math.random() * 1)+15;
 	this.draw = function(){
 		//ctx.clearRect(0,0,innerWidth,innerHeight);
 		ctx.beginPath();
 		ctx.arc(this.x,this.y,this.size,0,Math.PI * 2, false);
-		ctx.strokeStyle = 'black';
+		ctx.strokeStyle = '#000';
 		ctx.stroke();
 		ctx.fillStyle = this.color;
 		ctx.fill();
 	}
 	
+	
 	this.update = function(){
-
 		//////////////////////////////// EFFECT 1 ////////////////////////////
 		if (activeEffect == 1){
 			if (this.x + this.size > canvas.width || this.x - this.size < 0){
@@ -332,12 +350,6 @@ function Particle(x, y, dx, dy, size, color, density, bounceFactor, vy, randomiz
 					this.y+=4;
 					//this.x+=(Math.random() * 1)-0.5;
 				}
-				/*
-				if (mouse.x - this.x < 0 && mouse.x - this.x >-50 &&
-				mouse.y - this.y < 50 && mouse.y - this.y >-50){
-				//this.x+=1;
-				this.y+=1;
-				}*/
 		}
 		//////////////////////////////// EFFECT 4 ////////////////////////////
 		if (activeEffect == 4){
@@ -358,7 +370,7 @@ function Particle(x, y, dx, dy, size, color, density, bounceFactor, vy, randomiz
 		}
 		//////////////////////////////// EFFECT 5 ////////////////////////////
 		if (activeEffect == 5){
-				angle += this.density/71;
+				angle += this.density/70;
 				//this.vy += this.density;
 				this.y -= this.density+this.randomize/30;
 				this.x = this.x + Math.sin(angle) * 0.8;
@@ -379,9 +391,9 @@ function Particle(x, y, dx, dy, size, color, density, bounceFactor, vy, randomiz
 							this.color = colorArray1[Math.floor(Math.random()*colorArray1.length)];
 						} else if (sliderValue == 2){
 							this.color = colorArray2[Math.floor(Math.random()*colorArray2.length)];
-						}else if (sliderValue == 3){
+						} else if (sliderValue == 3){
 							this.color = colorArray3[Math.floor(Math.random()*colorArray3.length)];
-						}else if (sliderValue == 4){
+						} else if (sliderValue == 4){
 							this.color = colorArray4[Math.floor(Math.random()*colorArray4.length)];
 					}
 				};
@@ -393,6 +405,18 @@ function Particle(x, y, dx, dy, size, color, density, bounceFactor, vy, randomiz
 				}
 				
 		}
+		//////////////////////////////// EFFECT 6 ////////////////////////////
+		if (activeEffect == 6){
+				if (this.x + this.size > canvas.width || this.x - this.size < 0){
+					this.dx = -this.dx;
+				}
+				if (this.y + this.size > canvas.height || this.y - this.size < 0){
+					this.dy = -this.dy;
+				}
+				this.x += this.dx; 
+				this.y += this.dy;
+		}
+
 	this.draw();
 	}
 }
@@ -408,16 +432,33 @@ window.addEventListener('resize',
 )
 
 function init() {
-	particleArray = [];
-	for (let i = 0; i < 900; i++){
-		let size = Math.random() * innerHeight/80 + innerHeight/350; //PARTICLE SIZE DEPENDING ON WINDOW HEIGHT
-		let x = Math.random() * (innerWidth - size * 2) + size;
-		let y = Math.random() * (innerHeight - size * 2) + size;
-		let dx = (Math.random() - 0.5) * .5;
-		let dy = (Math.random() - 0.5) * .5;
-		let density = Math.random() + 1 //determines how fast it falls;
-		particleArray.push(new Particle(x, y, dx, dy, size));
+if (activeEffect <= 5){
+		particleArray = [];
+		for (let i = 0; i < innerWidth; i++){
+			let size = Math.random() * innerHeight/80 + innerHeight/350; //PARTICLE SIZE DEPENDING ON WINDOW HEIGHT
+			let x = Math.random() * (innerWidth - size * 2) + size;
+			let y = Math.random() * (innerHeight - size * 2) + size;
+			let dx = (Math.random() - 0.5) * .5;
+			let dy = (Math.random() - 0.5) * .5;
+			let density = Math.random() + 1 //determines how fast it falls;
+			particleArray.push(new Particle(x, y, dx, dy, size));
+		}
+	
+	
+}else if (activeEffect > 5){
+		particleArray = [];
+		for (let i = 0; i < 3; i++){
+			let size = Math.random() * innerHeight/80 + innerHeight/350; //PARTICLE SIZE DEPENDING ON WINDOW HEIGHT
+			let x = Math.random() * (innerWidth - size * 2) + size;
+			let y = Math.random() * (innerHeight - size * 2) + size;
+			let dx = (Math.random() - 0.5) * .5;
+			let dy = (Math.random() - 0.5) * .5;
+			let density = Math.random() + 1 //determines how fast it falls;
+			particleArray.push(new Particle(x, y, dx, dy, size));
+			}
+			
 	}
+
 }
 
 // ANIMATION LOOP ///////////////////////////////////////
@@ -428,6 +469,7 @@ function animate(){
 	for (let i = 0; i < particleArray.length; i++){
 		particleArray[i].update();
 	}
+	
 }
 init();
 animate();
