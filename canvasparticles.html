@@ -30,6 +30,7 @@ h1 {
 	z-index: -1000;
 	//display: none;
 	overflow: hidden;
+	//background: gray;
 }
 #controlsWrapper {
 	position: absolute;
@@ -222,15 +223,6 @@ const colorArray4 = [
 	'#96F0DE'
 ];
 
-// SLIDER INPUT /////////////////////////////
-
-slider.addEventListener('change', function(){
-	sliderValue = slider.value;
-	console.log(sliderValue);
-	init();
-
-})
-
 // CREATE PARTICLE OBJECT ///////////////////
 function Particle(x, y, dx, dy, size, color, density, bounceFactor, vy, randomize){
 	this.x = x;
@@ -256,8 +248,10 @@ function Particle(x, y, dx, dy, size, color, density, bounceFactor, vy, randomiz
 		//ctx.clearRect(0,0,innerWidth,innerHeight);
 		ctx.beginPath();
 		ctx.arc(this.x,this.y,this.size,0,Math.PI * 2, false);
-		ctx.strokeStyle = '#000';
-		ctx.stroke();
+		if (sliderValue != 4){
+			ctx.strokeStyle = '#000';
+			ctx.stroke();
+		}
 		ctx.fillStyle = this.color;
 		ctx.fill();
 	}
@@ -434,7 +428,7 @@ window.addEventListener('resize',
 function init() {
 if (activeEffect <= 5){
 		particleArray = [];
-		for (let i = 0; i < innerWidth; i++){
+		for (let i = 0; i < innerWidth/2; i++){
 			let size = Math.random() * innerHeight/80 + innerHeight/350; //PARTICLE SIZE DEPENDING ON WINDOW HEIGHT
 			let x = Math.random() * (innerWidth - size * 2) + size;
 			let y = Math.random() * (innerHeight - size * 2) + size;
@@ -490,6 +484,22 @@ buttons.forEach(button => button.addEventListener('click', function(){
 		button[i].classList.remove('active');
 	}*/
 }))
+// SLIDER INPUT /////////////////////////////
+
+slider.addEventListener('change', function(){
+	sliderValue = slider.value;
+	console.log(sliderValue);
+	if (sliderValue == 3) {
+		console.log('aaa');
+		canvas.style.background = 'linear-gradient(red, yellow, blue)';
+	}else if (sliderValue == 4){
+		canvas.style.background = 'linear-gradient(#25364f, #4d71a5, #9bc4ff)';
+	} else {
+		console.log('eee');
+		canvas.style.background = 'white';
+	}
+	init();
+})
 
 </script>
 
