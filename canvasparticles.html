@@ -30,7 +30,7 @@ h1 {
 	z-index: -1000;
 	//display: none;
 	overflow: hidden;
-	//background: gray;
+	background: linear-gradient(#25364f, #4d71a5, #9bc4ff);
 }
 #controlsWrapper {
 	position: absolute;
@@ -194,18 +194,16 @@ let minSize = 3;
 
 // SOME RANDOM COLOURS https://color.adobe.com/create/color-wheel/
 const colorArray1 = [
-	'#2FC1E4',
-	'#21A4D3',
-	'#048CAC',
-	'#145674',
-	'#023855'
+	'#DEFCF5',
+	'#BAFFE5',
+	'#FFF5F5',
+	'#A3FFE5',
+	'#96F0DE'
 ];
 const colorArray2 = [
 	'#8C5523',
 	'#FFC38C',
 	'#FF9B40',
-	'#7F5026',
-	'#CC7C33'
 ];
 const colorArray3 = [
 	'#3B9994',
@@ -214,15 +212,13 @@ const colorArray3 = [
 	'#FF88AE',
 	'#CC6CBB'
 ];
-
 const colorArray4 = [
-	'#DEFCF5',
-	'#BAFFE5',
-	'#FFF5F5',
-	'#A3FFE5',
-	'#96F0DE'
+	'#9ec4f7',
+	'#21A4D3',
+	'#048CAC',
+	'#145674',
+	'#023855'
 ];
-
 // CREATE PARTICLE OBJECT ///////////////////
 function Particle(x, y, dx, dy, size, color, density, bounceFactor, vy, randomize){
 	this.x = x;
@@ -248,7 +244,7 @@ function Particle(x, y, dx, dy, size, color, density, bounceFactor, vy, randomiz
 		//ctx.clearRect(0,0,innerWidth,innerHeight);
 		ctx.beginPath();
 		ctx.arc(this.x,this.y,this.size,0,Math.PI * 2, false);
-		if (sliderValue != 4){
+		if (sliderValue == 5){
 			ctx.strokeStyle = '#000';
 			ctx.stroke();
 		}
@@ -364,10 +360,10 @@ function Particle(x, y, dx, dy, size, color, density, bounceFactor, vy, randomiz
 		}
 		//////////////////////////////// EFFECT 5 ////////////////////////////
 		if (activeEffect == 5){
-				angle += this.density/70;
+				angle += this.density/innerWidth*50;
 				//this.vy += this.density;
 				this.y -= this.density+this.randomize/30;
-				this.x = this.x + Math.sin(angle) * 0.8;
+				this.x = this.x + Math.sin(angle);
 				this.size += this.density/2;
 
 				// if it reaches 'maxSize-6' make it transparent
@@ -407,8 +403,8 @@ function Particle(x, y, dx, dy, size, color, density, bounceFactor, vy, randomiz
 				if (this.y + this.size > canvas.height || this.y - this.size < 0){
 					this.dy = -this.dy;
 				}
-				this.x += this.dx; 
-				this.y += this.dy;
+				this.x += this.dx*20; 
+				this.y += this.dy*20;
 		}
 
 	this.draw();
@@ -420,7 +416,7 @@ window.addEventListener('resize',
 	function(){
 		canvas.width = innerWidth;
 		canvas.height = innerHeight;
-		maxSize = innerWidth/17;
+		maxSize = innerWidth/15;
 		init();
 	}
 )
@@ -441,7 +437,7 @@ if (activeEffect <= 5){
 	
 }else if (activeEffect > 5){
 		particleArray = [];
-		for (let i = 0; i < 3; i++){
+		for (let i = 0; i < 30; i++){
 			let size = Math.random() * innerHeight/80 + innerHeight/350; //PARTICLE SIZE DEPENDING ON WINDOW HEIGHT
 			let x = Math.random() * (innerWidth - size * 2) + size;
 			let y = Math.random() * (innerHeight - size * 2) + size;
@@ -489,13 +485,16 @@ buttons.forEach(button => button.addEventListener('click', function(){
 slider.addEventListener('change', function(){
 	sliderValue = slider.value;
 	console.log(sliderValue);
-	if (sliderValue == 3) {
-		console.log('aaa');
-		canvas.style.background = 'linear-gradient(red, yellow, blue)';
-	}else if (sliderValue == 4){
+	if (sliderValue == 1) {
 		canvas.style.background = 'linear-gradient(#25364f, #4d71a5, #9bc4ff)';
+	}else if (sliderValue == 2) {
+		canvas.style.background = 'linear-gradient(#7F5026, #CC7C33)';
+	}else if (sliderValue == 3) {
+		//canvas.style.background = 'linear-gradient(red 10%,yellow 50%, blue 90%)';
+		canvas.style.background = 'radial-gradient(#fff, #C8FFDD, #FF88AE)';
+	}else if (sliderValue == 4){
+		canvas.style.background = 'linear-gradient(to top left,  #000, #2FC1E4, white)';
 	} else {
-		console.log('eee');
 		canvas.style.background = 'white';
 	}
 	init();
