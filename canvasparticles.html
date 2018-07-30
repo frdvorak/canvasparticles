@@ -160,40 +160,63 @@ h1 {
 	transition: 1s;
 	width: 200px;
 }
-.tooltip {
-	position: absolute;
-	right: -130px;
-	top: 6px;
-	width: 120px;
-	height: 30px;
-	line-height: 30px;
-	background: rgba(0,0,0,.9);
-	font-size: 9px;
+/********************************** TOOLTIP **************************************/
+.arrow_box {
+	position: relative;
+	top: 30px;
+	right: -265px;
+	background: rgba(0,0,0,0.6);
+	border: 0px solid #000;
+	width: 115px;
+	font-size: 11px;
+	color: #fff;
+	line-height: 27px;
 	text-align: center;
-	border-radius: 5px;
-	color: white;
-	z-index: 100;
-	animation: vanish 7s forwards;
+	animation: vanish 10s forwards, move 1s infinite;
+	opacity: 0;
 }
+.arrow_box2 {
+	top: 10px;
+	animation-delay: .5s;
+}
+.arrow_box:after, .arrow_box:before {
+	right: 100%;
+	top: 50%;
+	border: solid transparent;
+	content: " ";
+	height: 0;
+	width: 0;
+	position: absolute;
+	pointer-events: none;
+	
+}
+.arrow_box:after {
+	border-color: rgba(255, 255, 255, 0);
+	border-right-color: rgba(0,0,0,0);
+	border-width: 10px;
+	margin-top: -10px;
+	
+}
+.arrow_box:before {
+	border-color: rgba(0, 0, 0, 0);
+	border-right-color: rgba(0,0,0,6);
+	border-width: 13px;
+	margin-top: -13px;
+	
+}
+
 @keyframes vanish {
-	0% {opacity: 1;}
+	0% {opacity: 0;}
+	20% {opacity: 1;}
 	90% {opacity: 1;}
 	100% {opacity: 0;}
 }
-.tooltip i {
-	font-size: 40px;
-	position: absolute;
-	top: -6px;
-	left: -20px;
-	animation: moveArrow 1s infinite;
-	
+@keyframes move {
+	0% {right: -265px;}
+	50% {right: -290px;}
+	90% {right: -265px;}
+	100% {right: -265px;}
 }
-@keyframes moveArrow {
-	0% {left: 0px; opacity: 0;}
-	50% {left: -15px; opacity: 1;}
-	100% {left: -15px; opacity: 1;}
-}
-
 </style>
 <body>
 <canvas id='canvas1'></canvas>	
@@ -205,7 +228,7 @@ h1 {
 <div id='controlsWrapper'>
 	<h1></h1>
 	<div id='controls'>
-		<div class='tooltip'><i class="fas fa-caret-left"></i> change movement</div>
+		<div class='arrow_box'>change movement</div>
 		<div class='button button1 active'>1</div>
 		<div class='button button2'>2</div>
 		<div class='button button3'>3</div>
@@ -213,7 +236,7 @@ h1 {
 		<div class='button button5'>5</div>
 		<div class='button button5'>6</div>
 		<div class='infoBoard1'>
-				<div class='tooltip'><i class="fas fa-caret-left"></i> change colors</div>
+				<div class='arrow_box arrow_box2'>change colors</div>
 				<p>color: <input type='range' id='slider' name='slider' min='1' max='4' value='1'></p>
 		</div>
 		<div class='infoBoard2'>
