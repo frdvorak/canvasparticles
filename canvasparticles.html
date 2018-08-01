@@ -15,14 +15,6 @@ body {
 	height: 100vh;
 	overflow: hidden;
 }
-h1 {
-	position: absolute;
-	bottom: -57px; left: -45px;
-	width: 200%;
-	transform: rotate(10deg);
-	z-index: -10;
-	font-size: 22px;
-}
 #canvas1 {
 	position: absolute;
 	width: 100%;
@@ -37,21 +29,19 @@ h1 {
 	width: auto;
 	min-width: 260px;
 	height: 202px;
-	top: 20%;
+	top: 50%;
 	left: 50%;
-	transform: translate(-50%, 0);
+	transform: translate(-50%, -50%);
 }
 #controls {
 	position: absolute;
 	width: 260px;
 	height: 202px;
 	//background: rgba(255,255,255,.1);
-	top: 5%;
-	left: 50%;
-	transform: translate(-50%, 0);
+	top: 0;
+	left: 0;
 	z-index: 100;
 	border-radius: 5px;
-	//overflow: hidden;
 }
 
 /*
@@ -167,9 +157,9 @@ h1 {
 }
 /********************************** TOOLTIP **************************************/
 .arrow_box {
-	position: relative;
-	top: 30px;
-	right: -265px;
+	position: absolute;
+	top: 10px;
+	right: -90px;
 	background: rgba(0,0,0,0.6);
 	border: 0px solid #000;
 	width: 115px;
@@ -181,7 +171,7 @@ h1 {
 	opacity: 0;
 }
 .arrow_box2 {
-	top: 10px;
+	top: 8px;
 	animation-delay: .5s;
 }
 .arrow_box:after, .arrow_box:before {
@@ -216,10 +206,10 @@ h1 {
 	100% {opacity: 0;}
 }
 @keyframes move {
-	0% {right: -265px;}
-	50% {right: -290px;}
-	90% {right: -265px;}
-	100% {right: -265px;}
+	0% {right: -80px;}
+	50% {right: -90px;}
+	90% {right: -90px;}
+	100% {right: -80px;}
 }
 </style>
 <body>
@@ -230,15 +220,14 @@ h1 {
 	<p>Github: github.com/fdvorak/canvasparticles</p>
 </div>
 <div id='controlsWrapper'>
-	<h1></h1>
-	<div id='controls'>
-		<div class='arrow_box'>change movement</div>
+	<div id='controls'>		
 		<div class='button button1 active' data-mode='Floating'>1</div>
 		<div class='button button2' data-mode='Snow'>2</div>
 		<div class='button button3' data-mode='Cross streams'>3</div>
 		<div class='button button4' data-mode='Bouncing'>4</div>
 		<div class='button button5' data-mode='Bubbles'>5</div>
 		<div class='button button6' data-mode='under constuction'>6</div>
+		<div class='arrow_box'>change movement</div>
 		<div class='infoBoard1'>
 				<div class='arrow_box arrow_box2'>change colors</div>
 				<p class='p_color'>color: <input type='range' id='slider' name='slider' min='1' max='4' value='1'></p>
