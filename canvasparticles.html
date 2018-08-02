@@ -156,60 +156,76 @@ body {
 	width: 200px;
 }
 /********************************** TOOLTIP **************************************/
-.arrow_box {
+.tooltip {
+	filter: url(#goo);
+}
+.tooltip .bubble {
 	position: absolute;
-	top: 10px;
-	right: -90px;
-	background: rgba(0,0,0,0.6);
-	border: 0px solid #000;
-	width: 115px;
-	font-size: 11px;
-	color: #fff;
-	line-height: 27px;
+	background: #000;
+	border-radius: 50%;
+	color: white;
+	font-size: 9px;
 	text-align: center;
-	animation: vanish 10s forwards, move 1s infinite;
-	opacity: 0;
+	animation: move 10s forwards;
+	transform: scale(0);
 }
-.arrow_box2 {
-	top: 8px;
-	animation-delay: .5s;
+.tooltip .bubble1 {
+	top:-10px; left:0;
+	width: 20px; height: 20px;
+	animation-delay: 0.6s;
 }
-.arrow_box:after, .arrow_box:before {
-	right: 100%;
-	top: 50%;
-	border: solid transparent;
-	content: " ";
-	height: 0;
-	width: 0;
-	position: absolute;
-	pointer-events: none;
-	
+.tooltip .bubble2 {
+	top:-30px; left:-45px;
+	width: 50px; height: 50px;
+	animation-delay: 0.4s;
 }
-.arrow_box:after {
-	border-color: rgba(0, 0, 0, 0);
-	border-right-color: rgba(0,0,0,0.6);
-	border-width: 10px;
-	margin-top: -10px;
-	
+.tooltip .bubble3 {
+	top:-20px; left:-120px;
+	width: 90px; height: 90px;
+	line-height: 90px;
+	animation-delay: 0s;
 }
-.arrow_box:before {
-	border-color: rgba(0, 0, 0, 0);
-	border-right-color: rgba(0,0,0,0.6);
-	border-width: 13px;
-	margin-top: -13px;
-	
+.tooltip2 .bubble1 {
+	top:10px; left:-20px;
+	width: 20px; height: 20px;
+	//animation-delay: 0.2s;
 }
-@keyframes vanish {
-	0% {opacity: 0;}
-	20% {opacity: 1;}
-	90% {opacity: 1;}
-	100% {opacity: 0;}
+.tooltip2 .bubble2 {
+	top:20px; left:-45px;
+	width: 50px; height: 50px;
+	//animation-delay: 0.4s;
 }
+.tooltip2 .bubble3 {
+	top:40px; left:-120px;
+	width: 90px; height: 90px;
+	line-height: 90px;
+	//animation-delay: 0s;
+}
+
 @keyframes move {
-	0% {right: -80px;}
-	50% {right: -90px;}
-	90% {right: -90px;}
-	100% {right: -80px;}
+	0% {transform: scale(0);}
+	20% {transform: scale(0);}
+	35% {transform: scale(1.3);}
+	48% {transform: scale(0.85);}
+	55% {transform: scale(1.2);}
+	70% {transform: scale(0.85);}
+	75% {transform: scale(1.2);}
+	80% {transform: scale(0.85);}
+	95% {transform: scale(1.2);}
+	100% {transform: scale(0);}
+}
+
+
+svg {
+	display: none;
+}
+/**************************************************************************/
+/**************************************************************************/
+/********************** SMALL SCREENS (mobile) ******************************/
+/**************************************************************************/
+/**************************************************************************/
+@media screen and (max-width: 450px){
+
 }
 </style>
 <body>
@@ -227,10 +243,18 @@ body {
 		<div class='button button4' data-mode='Bouncing'>4</div>
 		<div class='button button5' data-mode='Bubbles'>5</div>
 		<div class='button button6' data-mode='under constuction'>6</div>
-		<div class='arrow_box'>change movement</div>
+		<div class='tooltip tooltip1'>
+			<div class='bubble bubble1'></div>
+			<div class='bubble bubble2'></div>
+			<div class='bubble bubble3'>Change movement</div>
+		</div>
 		<div class='infoBoard1'>
-				<div class='arrow_box arrow_box2'>change colors</div>
-				<p class='p_color'>color: <input type='range' id='slider' name='slider' min='1' max='4' value='1'></p>
+			<div class='tooltip tooltip2'>
+				<div class='bubble bubble1'></div>
+				<div class='bubble bubble2'></div>
+				<div class='bubble bubble3'>Change colours</div>
+			</div>
+			<p class='p_color'>color: <input type='range' id='slider' name='slider' min='1' max='4' value='1'></p>
 		</div>
 		<div class='infoBoard2'>
 		<p class='p_current'>
@@ -238,6 +262,18 @@ body {
 		</div>
 	</div>
 </div>
+<svg>
+	<defs>
+		<filter id='goo'>
+			<feGaussianBlur in='SourceGraphic' stdDeviation='10' result='blurName'/>
+			<feColorMatrix in='blurName' mode='matrix' values='	1 0 0 0 0
+															0 1 0 0 0 
+															0 0 1 0 0
+															0 0 0 16 -8 ' result='martixName'/>
+			<feBlend in='SourceGraphic' in2='martixName'/>
+		</filter>
+	</defs>
+</svg>
 <script>
 let activeEffect = 1;
 // CANVAS ///////////////////////////////////
