@@ -29,7 +29,7 @@ body {
 	width: auto;
 	min-width: 260px;
 	height: 152px;
-	top: 50%;
+	top: 45%;
 	left: 50%;
 	transform: translate(-50%, -50%);
 }
@@ -43,38 +43,25 @@ body {
 	z-index: 100;
 	border-radius: 5px;
 }
-
-/*
-#controls:before {
-	content: 'Interactive backgrounds';
-	position: absolute;
-	bottom: -23px; left: -44px;
-	width: 150%;
-	height: 30px;
-	color: rgba(255,255,255,0.8);
-	font-size: 22px;
-	z-index: 10;
-	transform: rotate(10deg);
-	overflow: hidden;
-}*/
 .button {
 	position: relative;
 	top:0; left: 0;
 	float: left;
-	width: 41.3px; height: 50px;
+	width: 62.5px; height: 50px;
 	background: rgba(0,0,0,.5);
 	margin-right: 2px;
+	margin-top: 2px;
 	border-radius: 5px;
 	text-align: center;
 	line-height: 50px;
 	font-size: 30px;
-	color: #000;
+	color: rgba(255,255,255,0.7);
 	transition: .5s;
 }
-
 .button:hover, .button.active {
 	background: rgba(0,0,0,.9);
 	color: #fff;
+	
 }
 .infoBoard1 {
 	position: relative;
@@ -96,7 +83,7 @@ body {
 	position: relative;
 	width: 242px;
 	margin-top: 2px;
-	height: 50px;
+	height: 70px;
 	top:0; left:0;
 	float: left;
 	background: rgba(0,0,0,.8);
@@ -104,14 +91,56 @@ body {
 	padding: 8px;
 	text-align: justify;
 	font-size: 12px;
-	line-height: 16px;
 	color: #fff;
-	overflow: hidden;
+	//overflow: hidden;
 }
-.p_current {
+
+.p_current_movement {
+	position: absolute;
+	top: 10px; left: 10px;
 	line-height: 10px;
-	margin-top: -3px;
+	margin-top: -10px;
 }
+.p_current_colour {
+	position: absolute;
+	top: 60px; left: 10px;
+	line-height: 10px;
+	margin-top: -10px;
+}
+.highlight {
+	color: #fff;
+	position: relative;
+	top: 3px;
+	left: 30px; 
+	font-size: 25px;
+	height: 10px;
+	display: block;
+	transform: rotateY(10deg) rotateZ(-5deg);
+	//animation: float 16s infinite;
+	animation: flip 0.6s forwards;
+	text-shadow: 1px -1px 3px #000,
+				-1px 1px 3px #000,
+				-1px -1px 3px #000,
+				1px 1px 3px #000
+				;
+}
+.highlight2 {
+	left: 50px;
+}
+
+@keyframes flip {
+0% {transform: rotateY(10deg) rotateZ(-5deg);}
+100% {transform: rotateY(-360deg) rotateZ(-5deg);}
+}
+/*
+@keyframes float {
+0% {transform: rotateY(10deg) rotateZ(-5deg);}
+20% {transform: rotateY(20deg) rotateZ(2deg);}
+30% {transform: rotateY(10deg) rotateZ(-1deg);}
+50% {transform: rotateY(-20deg) rotateZ(1deg);}
+70% {transform: rotateY(10deg) rotateZ(5deg);}
+100% {transform: rotateY(10deg) rotateZ(-5deg);}
+}*/
 .p_color {
 	position: absolute;
 	top: -8px; left: 3px;
@@ -147,7 +176,6 @@ body {
 	width: 210px;
 	height: 210px;
 	padding: 0 10px;
-
 }
 .info:hover p{
 	opacity: 1;
@@ -173,7 +201,6 @@ body {
 	line-height: 12px;
 	color: white;
 }
-
 /********************************** TOOLTIP **************************************/
 .tooltip {
 	filter: url(#goo);
@@ -255,13 +282,13 @@ svg {
 <div id='controlsWrapper'>
 	<div id='controls'>		
 		<div class='button button1 active' data-mode='Floating'>1</div>
-		<div class='button button2' data-mode='Snow'>2</div>
+		<div class='button button2' data-mode='Falling bricks'>2</div>
 		<div class='button button3' data-mode='Cross streams'>3</div>
 		<div class='button button4' data-mode='Bouncing'>4</div>
 		<div class='button button5' data-mode='Bubbles'>5</div>
-		<div class='button button6' data-mode='Fog'>6</div>
+		<div class='button button6' data-mode='Steam trail'>6</div>
 		<div class='button button7' data-mode='Falling trail'>7</div>
-		<div class='button button8' data-mode='New'>8</div>
+		<div class='button button8' data-mode='Smoke trail'>8</div>
 		<div class='tooltip tooltip1'>
 			<div class='bubble bubble1'></div>
 			<div class='bubble bubble2'></div>
@@ -273,10 +300,11 @@ svg {
 				<div class='bubble bubble2'></div>
 				<div class='bubble bubble3'>Change colours</div>
 			</div>
-			<p class='p_color'>color: <input type='range' id='slider' name='slider' min='1' max='4' value='1'></p>
+			<p class='p_color'>color: <input type='range' id='slider' name='slider' min='1' max='5' value='1'></p>
 		</div>
 		<div class='infoBoard2'>
-		<p class='p_current'>
+		<p class='p_current_movement'></p>
+		<p class='p_current_colour'></p>
 		</p>
 		</div>
 	</div>
@@ -306,8 +334,9 @@ const slider = document.querySelector('#slider');
 let particleArray = [];
 let angle = 0;
 let sliderValue = 1;
-const p_current = document.querySelector(".p_current");
-let current_colour = 'Stratosphere';
+const p_current_movement = document.querySelector(".p_current_movement");
+const p_current_colour = document.querySelector(".p_current_colour");
+let current_colour = 'Mesoshphere';
 let activeMode = 'Floating';
 const tooltips = document.querySelectorAll('.tooltip');
 
@@ -372,6 +401,28 @@ const colorArray4 = [
 	'#145674',
 	'#023855'
 ];
+const colorArray5 = [
+	'rgba(0,0,0,0.05)',
+	'rgba(255,255,255,0.6)',
+	'rgba(255,255,255,0.2)'
+	
+];
+// random headlines
+const headlineArray = [
+	'Facebook to drop on-site support for political campaigns',
+	'Uber in talks to buy food delivery firm Deliveroo',
+	'Cryptocurrency has hit bottom, bitcoin due for renaissance',
+	'Amazon adds Echo devices for home and car in bid to dominate voice gadgets',
+	'Britain preparing to set up internet regulator',
+	'Vodafone to roll out 1,000 5G sites in UK by 2020',
+	'Write clean code and get rid of code smells with real life examples',
+	'Art of debugging with Chrome DevTools',
+	'Let’s explore objects in JavaScript',
+	'10 Things You Will Eventually Learn About JavaScript Projects',
+	'How I designed an animated book store with JavaScript, jQuery, and CSS.',
+	
+];
+
 // CREATE PARTICLE OBJECT ///////////////////
 function Particle(x, y, dx, dy, size, color, density, bounceFactor, vy, randomize){
 	this.x = x;
@@ -388,23 +439,29 @@ function Particle(x, y, dx, dy, size, color, density, bounceFactor, vy, randomiz
 		this.color = colorArray3[Math.floor(Math.random()*colorArray3.length)];
 	}else if (sliderValue == 4){
 		this.color = colorArray4[Math.floor(Math.random()*colorArray4.length)];
+	}else if (sliderValue == 5){
+		this.color = colorArray5[Math.floor(Math.random()*colorArray5.length)];
 	}
 	this.density = 0.3 + (Math.random() * 0.2)+0.1;
 	this.bounceFactor = 0.7;
 	this.vy = 1;
 	this.randomize = (Math.random() * 1)+15;
+	this.headline = headlineArray[Math.floor(Math.random()*headlineArray.length)];
 	this.draw = function(){
 		//ctx.clearRect(0,0,innerWidth,innerHeight);
 		ctx.beginPath();
+		//ctx.fillText('Hello world', this.x, this.y);
 		ctx.arc(this.x,this.y,this.size,0,Math.PI * 2, false);
+		//ctx.strokeRect(this.x,this.y,this.size,this.size);
+		//ctx.fillRect(this.x,this.y,this.size,this.size);
 		if (sliderValue == 5){
-			ctx.strokeStyle = '#000';
+			ctx.strokeStyle = 'rgba(0,0,0,0.6)';
 			ctx.stroke();
 		}
 		ctx.fillStyle = this.color;
 		ctx.fill();
 	}
-	
+
 	
 	this.update = function(){
 		//////////////////////////////// EFFECT 1 ////////////////////////////
@@ -432,26 +489,35 @@ function Particle(x, y, dx, dy, size, color, density, bounceFactor, vy, randomiz
 		}
 		//////////////////////////////// EFFECT 2 ////////////////////////////
 		if (activeEffect == 2){
-			angle += 0.00001;
-				this.y += this.density*5;
-				this.x += Math.sin(angle) * .3;
-			
-				// if it reaches bottom add new one to the top
-				if (this.y > canvas.height + 10){
-						this.x = Math.random() * (innerWidth - size * 2) + size;
-						this.y = -10;
-				};
-				/// bouncing from mouse
-				if (mouse.x - this.x < this.density*100 && mouse.x - this.x >0 &&
-				mouse.y - this.y < this.density*40 && mouse.y - this.y >-this.density*40){
-				this.x-=2;
-				this.y-=2;
+			//angle += 0.00001;
+				this.y += this.density*1.5;
+				//this.x += Math.sin(angle) * .1;
+				this.x -= 0.05;
+				this.size +=this.density*0.05;
+				// draw squares instead of circles
+				this.draw = function(){
+					ctx.beginPath();
+					ctx.fillStyle = this.color;
+					ctx.fillRect(this.x,this.y,this.size*5,this.size*5);
+					if (sliderValue == 5){
+						ctx.strokeStyle = 'rgba(0,0,0,0.6)';
+						ctx.strokeRect(this.x,this.y,this.size*5,this.size*5);
+						//ctx.stroke();
+					}
 				}
-				if (mouse.x - this.x < 0 && mouse.x - this.x >-this.density*100 &&
-				mouse.y - this.y < this.density*40 && mouse.y - this.y >-this.density*40){
-				this.x+=3;
-				this.y-=2;
-				}		
+				//interactivity mouse
+				if (mouse.x - this.x < 50 && mouse.x - this.x >-50 &&
+				mouse.y - this.y < 50 && mouse.y - this.y >-50){
+				if (this.size < maxSize){
+					this.y += this.density*5;
+				}
+			}
+				// if it reaches bottom add new one to the top
+				if (this.y > canvas.height + 40){
+						this.size = 0;
+						this.x = Math.random() * (innerWidth - size * 2) + size;
+						this.y = (Math.random() * innerHeight/5)+innerHeight/4;
+				};
 		} 
 		//////////////////////////////// EFFECT 3 ////////////////////////////
 		if (activeEffect == 3){
@@ -496,19 +562,26 @@ function Particle(x, y, dx, dy, size, color, density, bounceFactor, vy, randomiz
 		}
 		//////////////////////////////// EFFECT 4 ////////////////////////////
 		if (activeEffect == 4){
-				//this.density = (Math.random() * 1)-0.5;
 				this.y += this.vy;
 				this.vy += this.density;
+				
 									
-				// if it reaches bottom add new one to the top
-				if (this.y > canvas.height-this.size){
+				// if it reaches bottom bounce
+				if (this.y > canvas.height-this.size-2){
 						this.vy *= -this.bounceFactor;
+						this.density = this.density*0.9;
 				};
 				
-				if ((this.y > innerHeight - innerHeight/5) &&(mouse.x - this.x < 20 && mouse.x - this.x >-20 &&
+				// mouse interactivity
+				if ((this.y >= innerHeight - innerHeight/5) &&(mouse.x - this.x < 20 && mouse.x - this.x >-20 &&
 				mouse.y - this.y < 1250 && mouse.y - this.y >-1250)){
-				//this.x+=1;
-				this.vy-=2.7;
+					//this.x+=1;
+					this.vy-=2.7;
+					this.density = 0.7;
+				}
+				// fix to make sure particles don't sink below the viewport level
+				if (this.y > innerHeight-this.size) {
+					this.y-=3;
 				}
 		}
 		//////////////////////////////// EFFECT 5 ////////////////////////////
@@ -518,7 +591,30 @@ function Particle(x, y, dx, dy, size, color, density, bounceFactor, vy, randomiz
 				this.y -= this.density+this.randomize/30;
 				this.x = this.x + Math.sin(angle);
 				this.size += this.density/2;
-
+				
+				this.draw = function(){
+					if (sliderValue == 5){
+						ctx.beginPath();
+						ctx.strokeStyle = 'rgba(0,0,0,0.6)';
+						ctx.arc(this.x,this.y,this.size,0,Math.PI * 2, false);
+						ctx.stroke();
+						ctx.beginPath();
+						ctx.fillStyle = this.color;
+						ctx.arc(this.x,this.y,this.size,0,Math.PI * 2, false);
+						ctx.fill();
+					} else {
+					ctx.beginPath();
+					ctx.fillStyle = this.color;
+					ctx.arc(this.x,this.y,this.size,0,Math.PI * 2, false);
+					ctx.fill();
+					
+					ctx.beginPath();
+					ctx.fillStyle = 'rgba(255,255,255,0.5)';
+					ctx.arc(this.x-this.size/3,this.y-this.size/3,this.size/2,0,Math.PI * 2, false);
+					ctx.fill();
+					}
+				}
+			
 				// if it reaches 'maxSize-6' make it transparent
 				if (this.size > maxSize){
 						this.color = "rgba(255, 255, 255, 0.6)";
@@ -530,16 +626,19 @@ function Particle(x, y, dx, dy, size, color, density, bounceFactor, vy, randomiz
 						this.x = (Math.random()*innerWidth*2)-innerWidth;
 						this.size = (Math.random() * 0.1)+0.1;
 						this.vy = 0.01;
+						// colors need to be reassigned because of addition of rgba effect above
 						if (sliderValue == 1){
 							this.color = colorArray1[Math.floor(Math.random()*colorArray1.length)];
-						} else if (sliderValue == 2){
+						}else if (sliderValue == 2){
 							this.color = colorArray2[Math.floor(Math.random()*colorArray2.length)];
 						} else if (sliderValue == 3){
 							this.color = colorArray3[Math.floor(Math.random()*colorArray3.length)];
 						} else if (sliderValue == 4){
 							this.color = colorArray4[Math.floor(Math.random()*colorArray4.length)];
-					}
+						} else if (sliderValue == 5){
+							this.color = colorArray5[Math.floor(Math.random()*colorArray5.length)];
 				};
+				}
 				//interactivity
 				if (mouse.x - this.x < 50 && mouse.x - this.x > -50 &&
 				mouse.y - this.y < 50 && mouse.y - this.y >-50){
@@ -590,20 +689,63 @@ function Particle(x, y, dx, dy, size, color, density, bounceFactor, vy, randomiz
 		}
 		//////////////////////////////// EFFECT 8 ////////////////////////////
 		if (activeEffect == 8){
-			this.size+=0.08;
-			
-			if (this.size > 20) {
+			this.size+=this.density;
+			if (this.size > (10 + this.density*5)){
+				this.color = 'rgba(255,255,255,0.1)';
+			}
+			if (this.size > 23) {
 				this.x = (mouse.x + ((Math.random() * 20) - 10));
 				this.y = (mouse.y + ((Math.random() * 20) - 10));
 				this.size = 0;
 				this.vy = Math.random()*1.1;
+				// colors need to be reassigned because of addition of rgba effect above
+				if (sliderValue == 1){
+					this.color = colorArray1[Math.floor(Math.random()*colorArray1.length)];
+				}else if (sliderValue == 2){
+					this.color = colorArray2[Math.floor(Math.random()*colorArray2.length)];
+				} else if (sliderValue == 3){
+					this.color = colorArray3[Math.floor(Math.random()*colorArray3.length)];
+				} else if (sliderValue == 4){
+					this.color = colorArray4[Math.floor(Math.random()*colorArray4.length)];
+				} else if (sliderValue == 5){
+					this.color = colorArray5[Math.floor(Math.random()*colorArray5.length)];
+				}
 			}
 			this.y -= this.vy;
 			this.vy = Math.random()*1.1;					
-			// if it reaches bottom bounce
-			if (this.y > canvas.height-this.size){
-					this.vy *= -this.bounceFactor;
-			};
+		}
+		//////////////////////////////// EFFECT 9 ////////////////////////////
+		if (activeEffect == 9){
+			ctx.fillStyle = this.color;
+			ctx.fill();
+		// draw letters(headlines) instead of circle
+		this.draw = function(){
+			ctx.font = `${this.size*5}px Arial`;
+			if (sliderValue == 5){
+				ctx.beginPath();
+				ctx.strokeStyle = 'rgba(0,0,0,0.7)';
+				ctx.strokeText(this.headline, this.x, this.y);
+				ctx.stroke();
+			} else {
+				ctx.beginPath();
+				ctx.fillStyle = this.color;
+				ctx.fillText(this.headline, this.x, this.y);
+				ctx.fill();
+			}
+		}
+		ctx.fillStyle = this.color;
+		if (this.density > 0.5){	
+			this.x -= this.density+this.size/8;
+		} else {
+			this.x += this.density+this.size/8;
+		}
+		if (this.x < - 1700) {
+			this.x = innerWidth+1;
+		}
+		if (this.x > innerWidth+1) {
+			this.x = -1700;
+		}
+		//this.vy = Math.random()*1.1;					
 		}
 	this.draw();
 	}
@@ -618,9 +760,10 @@ window.addEventListener('resize',
 		init();
 	}
 )
+updateMovementLabel();
+updateColourLabel();
 
 function init() {
-updateText();
 if (activeEffect <= 5){
 		particleArray = [];
 		for (let i = 0; i < innerWidth/2; i++){
@@ -632,9 +775,9 @@ if (activeEffect <= 5){
 			let density = Math.random() + 1 //determines how fast it falls;
 			particleArray.push(new Particle(x, y, dx, dy, size));
 		}
-} else if (activeEffect == 6){
+} else if ((activeEffect == 6) || (activeEffect == 7)){
 		particleArray = [];
-		for (let i = 0; i < innerWidth*2; i++){
+		for (let i = 0; i < innerWidth; i++){
 			let size = 0;
 			let x = Math.random() * (innerWidth - size * 2) + size;
 			let y = Math.random() * (innerHeight - size * 2) + size;
@@ -645,10 +788,10 @@ if (activeEffect <= 5){
 			let minSize = 0;
 			let maxSize = 20;
 		}
-} else if (activeEffect == 7){
+} else if (activeEffect == 8){
 		particleArray = [];
-		for (let i = 0; i < innerWidth/5; i++){
-			let size = (Math.random() * 15) - 5;
+		for (let i = 0; i < innerWidth; i++){
+			let size = (Math.random() * 20) + 2;
 			let x = (mouse.x + ((Math.random() * 20) - 10));
 			let y = (mouse.y + ((Math.random() * 20) - 10));
 			let dx = (Math.random() * 0.5) - .5;
@@ -656,18 +799,19 @@ if (activeEffect <= 5){
 			let density = Math.random() + 1; //determines how fast it falls;
 			particleArray.push(new Particle(x, y, dx, dy, size));
 		}
-} else if (activeEffect == 8){
+} else if (activeEffect == 9){
 		particleArray = [];
-		for (let i = 0; i < innerWidth/2; i++){
-			let size = (Math.random() * 1) -0.5;
-			let x = (mouse.x + ((Math.random() * 20) - 10));
-			let y = (mouse.y + ((Math.random() * 20) - 10));
-			let dx = (Math.random() * 0.5) - .5;
-			let dy = (Math.random() * 0.5) - .5;
-			let density = Math.random() + 20; //determines how fast it falls;
+		for (let i = 0; i < innerHeight/20; i++){
+			let size = (Math.random() * 10-2) + 2; //Font size
+			let x = Math.random() * (innerWidth - size * 2) + size;
+			let y = Math.random() * (innerHeight - size * 2) + size;
+			let dx = (Math.random() - 0.5) * .5;
+			let dy = (Math.random() - 0.5) * .5;
+			//Math.random() * (max - min) + min;
+			let density = (Math.random() * 20-1)+ 1//determines how fast it falls;
 			particleArray.push(new Particle(x, y, dx, dy, size));
 		}
-}
+	}
 }
 // ANIMATION LOOP ///////////////////////////////////////
 function animate(){
@@ -688,12 +832,13 @@ buttons.forEach(button => button.addEventListener('click', function(){
 	for (let i = 0; i < buttons.length; i++){
 		buttons[i].classList.remove('active');
 	}
+	
 	this.classList.add('active');
 	activeEffect = this.textContent;
 	activeMode = this.dataset.mode;
 	//console.log(this.dataset.mode);
 	init();
-	updateText();
+	updateMovementLabel();
 }))
 // SLIDER INPUT /////////////////////////////
 slider.addEventListener('change', function(){
@@ -701,7 +846,7 @@ slider.addEventListener('change', function(){
 	console.log(sliderValue);
 	if (sliderValue == 1) {
 		canvas.style.background = 'linear-gradient(#25364f, #4d71a5, #9bc4ff)';
-		current_colour = 'Stratosphere';
+		current_colour = 'Mesoshphere';
 	}else if (sliderValue == 2) {
 		canvas.style.background = 'linear-gradient(#7F5026, #CC7C33)';
 		current_colour = 'Sandstorm';
@@ -712,15 +857,21 @@ slider.addEventListener('change', function(){
 	}else if (sliderValue == 4){
 		canvas.style.background = 'linear-gradient(to top left,  #000, #2FC1E4, white)';
 		current_colour = 'Ocean';
+	}else if (sliderValue == 5){
+		canvas.style.background = 'linear-gradient(to bottom, #d1d1d1, white 20%)';
+		current_colour = 'Outlines';
 	} else {
 		canvas.style.background = 'white';
 	}
 	init();
-	updateText();
+	updateColourLabel();
 })
 
-function updateText(){
-	p_current.innerHTML = '<p>Movement mode: ' + activeMode + '</p><p>Colour scheme: ' + current_colour + '</p>'; 
+function updateMovementLabel(){
+	p_current_movement.innerHTML = '<p>Movement mode:<span class="highlight highlight1">' + activeMode + '</span></p>'; 
+}
+function updateColourLabel(){
+	p_current_colour.innerHTML = '<p>Colour scheme: <span class="highlight highlight2">' + current_colour + '</span></p>'; 
 }
 </script>
 
