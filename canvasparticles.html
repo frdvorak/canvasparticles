@@ -24,6 +24,7 @@ body {
 	overflow: hidden;
 	background: linear-gradient(#25364f, #4d71a5, #9bc4ff);
 }
+/****************************** MAIN PANEL with buttons ********************************/
 #controlsWrapper {
 	position: absolute;
 	width: auto;
@@ -61,7 +62,6 @@ body {
 .button:hover, .button.active {
 	background: rgba(0,0,0,.9);
 	color: #fff;
-	
 }
 .infoBoard1 {
 	position: relative;
@@ -127,20 +127,10 @@ body {
 .highlight2 {
 	left: 50px;
 }
-
 @keyframes flip {
 0% {transform: rotateY(10deg) rotateZ(-5deg);}
 100% {transform: rotateY(-360deg) rotateZ(-5deg);}
 }
-/*
-@keyframes float {
-0% {transform: rotateY(10deg) rotateZ(-5deg);}
-20% {transform: rotateY(20deg) rotateZ(2deg);}
-30% {transform: rotateY(10deg) rotateZ(-1deg);}
-50% {transform: rotateY(-20deg) rotateZ(1deg);}
-70% {transform: rotateY(10deg) rotateZ(5deg);}
-100% {transform: rotateY(10deg) rotateZ(-5deg);}
-}*/
 .p_color {
 	position: absolute;
 	top: -8px; left: 3px;
@@ -153,7 +143,7 @@ body {
 	position: absolute;
 	top: 2px; right: 10px;
 }
-/********************************** INFO **************************************/
+/****************************** INFO (i icon in top left corner)********************************/
 .info {
 	position: absolute;
 	top: 15px;
@@ -201,7 +191,7 @@ body {
 	line-height: 12px;
 	color: white;
 }
-/********************************** TOOLTIP **************************************/
+/********************************** TOOLTIP on buttons *********************************/
 .tooltip {
 	filter: url(#goo);
 }
@@ -265,7 +255,8 @@ svg {
 /********************** SMALL SCREENS (mobile) ****************************/
 /**************************************************************************/
 /**************************************************************************/
-@media screen and (max-width: 450px){
+@media screen and (max-width: 640px){
+	/*** remove tooltips on small screens ***/
 	.tooltip {
 		display: none;
 	}
@@ -346,7 +337,7 @@ setTimeout(function(){
 	tooltips.forEach(tooltip => tooltip.style.display='none');
 }, 15000);
 
-// MOUSE POSITION ///////////////////////////
+// GET MOUSE POSITION ///////////////////////////////
 let mouse = {
 	x: undefined,
 	y: undefined
@@ -355,7 +346,13 @@ let touch = {
 	x: undefined,
 	y: undefined
 }
-
+window.addEventListener('mousemove', 
+	function(event){
+		mouse.x = event.x;
+		mouse.y = event.y;
+		//console.log(mouse);
+});
+// SET MOUSE POSITION AS UNDEFINED EVERY 5 SEC(to prevent effect getting stuck in corners when mouse leaves window)//////
 setInterval(function(){
 	mouse.x = undefined;
 	mouse.y = undefined;
@@ -363,18 +360,11 @@ setInterval(function(){
 	Touch.clientY = undefined;
 }, 5000);
 
-window.addEventListener('mousemove', 
-	function(event){
-		mouse.x = event.x;
-		mouse.y = event.y;
-		//console.log(mouse);
-});
-
 // RANGE OF SIZES FOR PARTICLES (on mouse hover)
 let maxSize = innerWidth/17;
 let minSize = 3;
 
-// SOME RANDOM COLOURS https://color.adobe.com/create/color-wheel/
+// COLOUR SCHEMES https://color.adobe.com/create/color-wheel/
 const colorArray1 = [
 	'#DEFCF5',
 	'#BAFFE5',
@@ -405,23 +395,10 @@ const colorArray5 = [
 	'rgba(0,0,0,0.05)',
 	'rgba(255,255,255,0.6)',
 	'rgba(255,255,255,0.2)'
-	
 ];
-// random headlines
-const headlineArray = [
-	'Facebook to drop on-site support for political campaigns',
-	'Uber in talks to buy food delivery firm Deliveroo',
-	'Cryptocurrency has hit bottom, bitcoin due for renaissance',
-	'Amazon adds Echo devices for home and car in bid to dominate voice gadgets',
-	'Britain preparing to set up internet regulator',
-	'Vodafone to roll out 1,000 5G sites in UK by 2020',
-	'Write clean code and get rid of code smells with real life examples',
-	'Art of debugging with Chrome DevTools',
-	'Let’s explore objects in JavaScript',
-	'10 Things You Will Eventually Learn About JavaScript Projects',
-	'How I designed an animated book store with JavaScript, jQuery, and CSS.',
-	
-];
+
+updateMovementLabel();
+updateColourLabel();
 
 // CREATE PARTICLE OBJECT ///////////////////
 function Particle(x, y, dx, dy, size, color, density, bounceFactor, vy, randomize){
@@ -446,7 +423,6 @@ function Particle(x, y, dx, dy, size, color, density, bounceFactor, vy, randomiz
 	this.bounceFactor = 0.7;
 	this.vy = 1;
 	this.randomize = (Math.random() * 1)+15;
-	this.headline = headlineArray[Math.floor(Math.random()*headlineArray.length)];
 	this.draw = function(){
 		//ctx.clearRect(0,0,innerWidth,innerHeight);
 		ctx.beginPath();
@@ -593,6 +569,7 @@ function Particle(x, y, dx, dy, size, color, density, bounceFactor, vy, randomiz
 				this.size += this.density/2;
 				
 				this.draw = function(){
+					//stroke this for 'Outline' colour schmeme n.5
 					if (sliderValue == 5){
 						ctx.beginPath();
 						ctx.strokeStyle = 'rgba(0,0,0,0.6)';
@@ -603,6 +580,7 @@ function Particle(x, y, dx, dy, size, color, density, bounceFactor, vy, randomiz
 						ctx.arc(this.x,this.y,this.size,0,Math.PI * 2, false);
 						ctx.fill();
 					} else {
+					//or else fill smaller circle in each bubble to create 'reflection'
 					ctx.beginPath();
 					ctx.fillStyle = this.color;
 					ctx.arc(this.x,this.y,this.size,0,Math.PI * 2, false);
@@ -615,18 +593,18 @@ function Particle(x, y, dx, dy, size, color, density, bounceFactor, vy, randomiz
 					}
 				}
 			
-				// if it reaches 'maxSize-6' make it transparent
-				if (this.size > maxSize){
+				//if it reaches 'maxSize-1' make it transparent
+				if (this.size > (maxSize-1)){
 						this.color = "rgba(255, 255, 255, 0.6)";
 				};
 				
-				// if it reaches 'maxSize' pop and add one to the bottom of screen
+				//if it reaches 'maxSize+this.randomize' pop the bubble and add new one to the bottom of screen
 				if (this.size > maxSize+this.randomize){
 						this.y = innerHeight/2 + (Math.random()*innerHeight/4)+innerHeight/4;
 						this.x = (Math.random()*innerWidth*2)-innerWidth;
 						this.size = (Math.random() * 0.1)+0.1;
 						this.vy = 0.01;
-						// colors need to be reassigned because of addition of rgba effect above
+						// colours need to be reassigned because of addition of rgba transparency before it pops
 						if (sliderValue == 1){
 							this.color = colorArray1[Math.floor(Math.random()*colorArray1.length)];
 						}else if (sliderValue == 2){
@@ -760,8 +738,7 @@ window.addEventListener('resize',
 		init();
 	}
 )
-updateMovementLabel();
-updateColourLabel();
+
 
 function init() {
 if (activeEffect <= 5){
