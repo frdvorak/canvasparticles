@@ -397,6 +397,13 @@ const colorArray5 = [
 	'rgba(255,255,255,0.2)'
 ];
 
+// DISPLAY NAME OF ACTIVE EFFECT AND COLOUR
+function updateMovementLabel(){
+	p_current_movement.innerHTML = '<p>Movement mode:<span class="highlight highlight1">' + activeMode + '</span></p>'; 
+}
+function updateColourLabel(){
+	p_current_colour.innerHTML = '<p>Colour scheme: <span class="highlight highlight2">' + current_colour + '</span></p>'; 
+}
 updateMovementLabel();
 updateColourLabel();
 
@@ -438,7 +445,6 @@ function Particle(x, y, dx, dy, size, color, density, bounceFactor, vy, randomiz
 		ctx.fill();
 	}
 
-	
 	this.update = function(){
 		//////////////////////////////// EFFECT 1 ////////////////////////////
 		if (activeEffect == 1){
@@ -625,6 +631,7 @@ function Particle(x, y, dx, dy, size, color, density, bounceFactor, vy, randomiz
 		}
 		//////////////////////////////// EFFECT 6 ////////////////////////////
 		if (activeEffect == 6){
+			
 			if (this.x + this.size > canvas.width || this.x - this.size < 0){
 				this.dx = -this.dx;
 			}
@@ -667,8 +674,15 @@ function Particle(x, y, dx, dy, size, color, density, bounceFactor, vy, randomiz
 		}
 		//////////////////////////////// EFFECT 8 ////////////////////////////
 		if (activeEffect == 8){
-			this.size+=this.density;
-			if (this.size > (10 + this.density*5)){
+			//this.size+=0.09;
+			if (this.size < 0.1) {
+				this.x = (mouse.x + ((Math.random() * 20) - 10));
+				this.y = (mouse.y + ((Math.random() * 20) - 10));
+				this.size = Math.random()*10;
+				this.vy = ((Math.random()*1)-0.5);
+			}
+			this.size+=this.density/1.2;
+			if (this.size > (10 + this.density*10)){
 				this.color = 'rgba(255,255,255,0.1)';
 			}
 			if (this.size > 23) {
@@ -692,43 +706,10 @@ function Particle(x, y, dx, dy, size, color, density, bounceFactor, vy, randomiz
 			this.y -= this.vy;
 			this.vy = Math.random()*1.1;					
 		}
-		//////////////////////////////// EFFECT 9 ////////////////////////////
-		if (activeEffect == 9){
-			ctx.fillStyle = this.color;
-			ctx.fill();
-		// draw letters(headlines) instead of circle
-		this.draw = function(){
-			ctx.font = `${this.size*5}px Arial`;
-			if (sliderValue == 5){
-				ctx.beginPath();
-				ctx.strokeStyle = 'rgba(0,0,0,0.7)';
-				ctx.strokeText(this.headline, this.x, this.y);
-				ctx.stroke();
-			} else {
-				ctx.beginPath();
-				ctx.fillStyle = this.color;
-				ctx.fillText(this.headline, this.x, this.y);
-				ctx.fill();
-			}
-		}
-		ctx.fillStyle = this.color;
-		if (this.density > 0.5){	
-			this.x -= this.density+this.size/8;
-		} else {
-			this.x += this.density+this.size/8;
-		}
-		if (this.x < - 1700) {
-			this.x = innerWidth+1;
-		}
-		if (this.x > innerWidth+1) {
-			this.x = -1700;
-		}
-		//this.vy = Math.random()*1.1;					
-		}
+		
 	this.draw();
 	}
 }
-
 // RESIZE SETTING - empty and refill particle array every time window changes size + change canvas size
 window.addEventListener('resize',
 	function(){
@@ -739,9 +720,9 @@ window.addEventListener('resize',
 	}
 )
 
-
 function init() {
-if (activeEffect <= 5){
+	// for effects <= 5 add amount of particles equal to 'innerWidth/2'
+	if (activeEffect <= 5){
 		particleArray = [];
 		for (let i = 0; i < innerWidth/2; i++){
 			let size = Math.random() * innerHeight/80 + innerHeight/350; //PARTICLE SIZE DEPENDING ON WINDOW HEIGHT
@@ -752,7 +733,8 @@ if (activeEffect <= 5){
 			let density = Math.random() + 1 //determines how fast it falls;
 			particleArray.push(new Particle(x, y, dx, dy, size));
 		}
-} else if ((activeEffect == 6) || (activeEffect == 7)){
+	// for effects > 5 add amount of particles equal to 'innerWidth'
+	} else if (activeEffect > 5){
 		particleArray = [];
 		for (let i = 0; i < innerWidth; i++){
 			let size = 0;
@@ -764,29 +746,6 @@ if (activeEffect <= 5){
 			particleArray.push(new Particle(x, y, dx, dy, size));
 			let minSize = 0;
 			let maxSize = 20;
-		}
-} else if (activeEffect == 8){
-		particleArray = [];
-		for (let i = 0; i < innerWidth; i++){
-			let size = (Math.random() * 20) + 2;
-			let x = (mouse.x + ((Math.random() * 20) - 10));
-			let y = (mouse.y + ((Math.random() * 20) - 10));
-			let dx = (Math.random() * 0.5) - .5;
-			let dy = (Math.random() * 0.5) - .5;
-			let density = Math.random() + 1; //determines how fast it falls;
-			particleArray.push(new Particle(x, y, dx, dy, size));
-		}
-} else if (activeEffect == 9){
-		particleArray = [];
-		for (let i = 0; i < innerHeight/20; i++){
-			let size = (Math.random() * 10-2) + 2; //Font size
-			let x = Math.random() * (innerWidth - size * 2) + size;
-			let y = Math.random() * (innerHeight - size * 2) + size;
-			let dx = (Math.random() - 0.5) * .5;
-			let dy = (Math.random() - 0.5) * .5;
-			//Math.random() * (max - min) + min;
-			let density = (Math.random() * 20-1)+ 1//determines how fast it falls;
-			particleArray.push(new Particle(x, y, dx, dy, size));
 		}
 	}
 }
@@ -802,14 +761,13 @@ function animate(){
 init();
 animate();
 
-//CONTROLS, BUTTONS 1 - 5 ////////////////////////////
+//CONTROLS, BUTTONS ////////////////////////////
 const buttons = document.querySelectorAll('.button');
 buttons.forEach(button => button.addEventListener('click', function(){
 	//console.log(this.classList);
 	for (let i = 0; i < buttons.length; i++){
 		buttons[i].classList.remove('active');
 	}
-	
 	this.classList.add('active');
 	activeEffect = this.textContent;
 	activeMode = this.dataset.mode;
@@ -817,7 +775,7 @@ buttons.forEach(button => button.addEventListener('click', function(){
 	init();
 	updateMovementLabel();
 }))
-// SLIDER INPUT /////////////////////////////
+// COLOUR SLIDER INPUT /////////////////////////////
 slider.addEventListener('change', function(){
 	sliderValue = slider.value;
 	console.log(sliderValue);
@@ -844,12 +802,7 @@ slider.addEventListener('change', function(){
 	updateColourLabel();
 })
 
-function updateMovementLabel(){
-	p_current_movement.innerHTML = '<p>Movement mode:<span class="highlight highlight1">' + activeMode + '</span></p>'; 
-}
-function updateColourLabel(){
-	p_current_colour.innerHTML = '<p>Colour scheme: <span class="highlight highlight2">' + current_colour + '</span></p>'; 
-}
+
 </script>
 
 </body>
