@@ -260,6 +260,7 @@ svg {
 		<div class='button button4' data-mode='Bouncing'>4</div>
 		<div class='button button5' data-mode='Bubbles'>5</div>
 		<div class='button button6' data-mode='Fog'>6</div>
+		<div class='button button7' data-mode='New'>7</div>
 		<div class='tooltip tooltip1'>
 			<div class='bubble bubble1'></div>
 			<div class='bubble bubble2'></div>
@@ -546,9 +547,6 @@ function Particle(x, y, dx, dy, size, color, density, bounceFactor, vy, randomiz
 		}
 		//////////////////////////////// EFFECT 6 ////////////////////////////
 		if (activeEffect == 6){
-			this.minSize == 0;
-			this.size == 0;
-			this.maxSize == 20;
 			if (this.x + this.size > canvas.width || this.x - this.size < 0){
 				this.dx = -this.dx;
 			}
@@ -571,7 +569,30 @@ function Particle(x, y, dx, dy, size, color, density, bounceFactor, vy, randomiz
 			else if (this.size = 0.1){
 				this.size = 0;
 			}
-	}
+		}
+		//////////////////////////////// EFFECT 7 ////////////////////////////
+		if (activeEffect == 7){
+			this.size-=0.05;
+			if (this.size < 0.1) {
+				this.x = (mouse.x + ((Math.random() * 20) - 10));
+				this.y = (mouse.y + ((Math.random() * 20) - 10));
+				this.size = Math.random()*10;
+				this.vy = ((Math.random()*1)-0.5);
+			}
+			this.y += this.vy;
+			this.vy += 0.1;
+								
+			// if it reaches bottom add new one to the top
+			if (this.y > canvas.height-this.size){
+					this.vy *= -this.bounceFactor;
+			};
+			/*
+			if ((this.y > innerHeight - innerHeight/5) &&(mouse.x - this.x < 20 && mouse.x - this.x >-20 &&
+			mouse.y - this.y < 1250 && mouse.y - this.y >-1250)){
+				//this.x+=1;
+				this.vy-=2.7;
+			}*/
+		}
 	this.draw();
 	}
 }
@@ -599,7 +620,7 @@ if (activeEffect <= 5){
 			let density = Math.random() + 1 //determines how fast it falls;
 			particleArray.push(new Particle(x, y, dx, dy, size));
 		}
-} else if (activeEffect > 5){
+} else if (activeEffect == 6){
 		particleArray = [];
 		for (let i = 0; i < innerWidth*2; i++){
 			let size = 0;
@@ -611,10 +632,22 @@ if (activeEffect <= 5){
 			particleArray.push(new Particle(x, y, dx, dy, size));
 			let minSize = 0;
 			let maxSize = 20;
+		}
+} else if (activeEffect == 7){
+		particleArray = [];
+		for (let i = 0; i < innerWidth/5; i++){
+			let size = 3;
+			let x = undefined;
+			let y = undefined;
+			let dx = (Math.random() - 0.5) * .5;
+			let dy = (Math.random() - 0.5) * .5;
+			let density = Math.random() + 1 //determines how fast it falls;
+			particleArray.push(new Particle(x, y, dx, dy, size));
+			let minSize = 0;
+			let maxSize = 20;
 			}
-	}
 }
-
+}
 // ANIMATION LOOP ///////////////////////////////////////
 function animate(){
 	requestAnimationFrame(animate);
